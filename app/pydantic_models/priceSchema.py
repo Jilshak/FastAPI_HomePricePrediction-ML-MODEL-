@@ -1,4 +1,8 @@
 from pydantic import BaseModel
 
-class ImageBase(BaseModel):
-    image: str
+class PricePredictionInput(BaseModel):
+    area_type: str
+    sqft: float
+    bath: int
+    balcony: int
+    bhk: int
