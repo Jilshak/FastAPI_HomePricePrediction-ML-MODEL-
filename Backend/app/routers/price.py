@@ -15,10 +15,12 @@ price = APIRouter(
 
 
 
+
+
 @price.post("/predict/")
 def predict_price(input_data: PricePredictionInput):
-    if input_data.area_type in data_columns["data_columns"]:
-        loc_index = data_columns["data_columns"].index(input_data.area_type)
+    if input_data.location in data_columns["data_columns"]:
+        loc_index = data_columns["data_columns"].index(input_data.location)
     
         # x = [0.0] --> this initialized the x with the no.of colums as much as the data_colums otherwise it won't know what to expect and it might cause some issues and the field might not be filled as expected
         x = [0.0] * len(data_columns["data_columns"]) 
@@ -33,5 +35,5 @@ def predict_price(input_data: PricePredictionInput):
         predicted_price = model.predict([x])[0]
         return {"predicted_price": predicted_price}
     else:
-        return {"error": "Invalid area_type"}
+        return {"error": "Invalid location"}
     

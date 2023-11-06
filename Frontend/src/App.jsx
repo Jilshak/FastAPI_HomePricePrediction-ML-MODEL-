@@ -4,15 +4,43 @@ import Swal from 'sweetalert2'
 
 function App() {
 
-  const [area_type, setAreaType] = useState('')
+  const [area, setArea] = useState(["1st block jayanagar", "1st phase jp nagar", "2nd phase judicial layout",
+    "2nd stage nagarbhavi", "5th phase jp nagar", "6th phase jp nagar", "7th phase jp nagar", "8th phase jp nagar",
+    "9th phase jp nagar", "aecs layout", "abbigere", "akshaya nagar", "ambalipura", "ambedkar nagar", "amruthahalli", "anandapura", "ananth nagar", "anekal", "anjanapura", "ardendale", "arekere", "attibele", "beml layout", "btm 2nd stage", "btm layout", "babusapalaya", "badavala nagar", "balagere", "banashankari", "banashankari stage ii", "banashankari stage iii", "banashankari stage v",
+    "banashankari stage vi", "banaswadi", "banjara layout", "bannerghatta", "bannerghatta road", "basavangudi", "basaveshwara nagar", "battarahalli", "begur", "begur road", "bellandur", "benson town", "bharathi nagar", "bhoganhalli", "billekahalli", "binny pete", "bisuvanahalli", "bommanahalli", "bommasandra", "bommasandra industrial area", "bommenahalli", "brookefield", "budigere", "cv raman nagar", "chamrajpet", "chandapura", "channasandra", "chikka tirupathi", "chikkabanavar", "chikkalasandra",
+    "choodasandra", "cooke town", "cox town", "cunningham road", "dasanapura", "dasarahalli", "devanahalli",
+    "devarachikkanahalli", "dodda nekkundi", "doddaballapur", "doddakallasandra", "doddathoguru", "domlur", "dommasandra", "epip zone", "electronic city", "electronic city phase ii",
+    "electronics city phase 1", "frazer town", "gm palaya", "garudachar palya", "giri nagar", "gollarapalya hosahalli", "gottigere",
+    "green glen layout", "gubbalala", "gunjur", "hbr layout", "hrbr layout", "hsr layout", "haralur road", "harlur", "hebbal",
+    "hebbal kempapura", "hegde nagar", "hennur", "hennur road", "hoodi", "horamavu agara", "horamavu banaswadi", "hormavu", "hosa road", "hosakerehalli",
+    "hoskote", "hosur road", "hulimavu", "isro layout", "itpl", "iblur village", "indira nagar", "jp nagar", "jakkur", "jalahalli", "jalahalli east", "jigani", "judicial layout", "kr puram", "kadubeesanahalli", "kadugodi", "kaggadasapura", "kaggalipura", "kaikondrahalli", "kalena agrahara",
+    "kalyan nagar", "kambipura", "kammanahalli", "kammasandra", "kanakapura", "kanakpura road", "kannamangala", "karuna nagar", "kasavanhalli", "kasturi nagar", "kathriguppe", "kaval byrasandra", "kenchenahalli", "kengeri", "kengeri satellite town", "kereguddadahalli", "kodichikkanahalli", "kodigehaali", "kodihalli", "kogilu", "konanakunte", "koramangala", "kothannur", "kothanur", "kudlu", "kudlu gate", "kumaraswami layout", "kundalahalli", "lb shastri nagar", "laggere", "lakshminarayana pura", "lingadheeranahalli", "magadi road", "mahadevpura", "mahalakshmi layout", "mallasandra", "malleshpalya", "malleshwaram", "marathahalli", "margondanahalli", "marsur",
+    "mico layout", "munnekollal", "murugeshpalya", "mysore road", "ngr layout", "nri layout", "nagarbhavi", "nagasandra", "nagavara", "nagavarapalya", "narayanapura", "neeladri nagar", "ombr layout", "old airport road", "old madras road", "padmanabhanagar", "pai layout", "panathur", "parappana agrahara", "pattandur agrahara", "poorna pragna layout", "prithvi layout", "r.t. nagar", "rachenahalli", "raja rajeshwari nagar", "rajaji nagar", "rajiv nagar", "ramagondanahalli", "ramamurthy nagar", "rayasandra", "sahakara nagar", "sanjay nagar", "sarakki nagar", "sarjapur", "sarjapur  road", "sarjapura - attibele road", "sector 2 hsr layout", "sector 7 hsr layout", "seegehalli", "shampura",
+    "shivaji nagar", "singasandra", "somasundara palya", "sompura", "sonnenahalli", "subramanyapura", "sultan palaya", "tc palaya", "talaghattapura", "thanisandra", "thigalarapalya", "thubarahalli", "thyagaraja nagar", "tindlu", "tumkur road",
+    "ulsoor", "uttarahalli", "varthur", "varthur road", "vasanthapura", "vidyaranyapura",
+    "vijayanagar", "vishveshwarya layout", "vishwapriya layout", "vittasandra",
+    "whitefield", "yelachenahalli", "yelahanka", "yelahanka new town", "yelenahalli", "yeshwanthpur"])
+  const [location, setLocation] = useState('')
   const [sqft, setSqft] = useState(null)
   const [bath, setBath] = useState(null)
   const [bhk, setBhk] = useState(null)
   const [balcony, setBalcony] = useState(null)
 
+
+  const handleFormating = (number) => {
+    if (String(number).length == 6){
+      let output = `${number[0]} crores ${number.slice(1,3)} lakhs`
+      return output
+    }else if(String(number).length == 5){
+      let output = `${number.slice(0,2)} lakh ${number.slice(3,5)} thousand`
+      return output
+    }
+  }
+
+
   const handleSubmit = async () => {
     const input_data = {
-      area_type: area_type,
+      location: location,
       sqft: sqft,
       bath: bath,
       bhk: bhk,
@@ -22,9 +50,10 @@ function App() {
     const request = await axios.post(`http://127.0.0.1:8000/price/predict/`, input_data)
     const response = await request.data
     if (request.status == 200) {
-      console.log("Response: ", response.predicted_price)
+      console.log("Response: ", response.predicted_price.toFixed(2))
+      let data = await handleFormating(response.predicted_price.toFixed(2))
       Swal.fire({
-        title: `Apartment Price is: ${response.predicted_price}`,
+        title: `Apartment Price is: ${data}`,
         showClass: {
           popup: 'animate__animated animate__fadeInDown'
         },
@@ -49,12 +78,15 @@ function App() {
             <div class="divide-y divide-gray-200">
               <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                 <div class="relative">
-                  <select onChange={(e) => setAreaType(e.target.value)} className="select rounded-none w-full max-w-xs">
+                  <select onChange={(e) => setLocation(e.target.value)} className="select rounded-none w-full max-w-xs">
                     <option disabled selected>Area Type</option>
-                    <option value={'carpet area'}>Carpet Area</option>
-                    <option value={'super built-up area'}>Super BuildUp Area</option>
-                    <option value={'plot area'}>Plot Area</option>
-                    <option value={'built-up area'} >Build Up Area</option>
+                    {
+                      area.map((item) => {
+                        return (
+                          <option value={item}>{item}</option>
+                        )
+                      })
+                    }
                   </select>
                 </div>
                 <div class="relative">
